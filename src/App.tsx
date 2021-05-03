@@ -7,17 +7,35 @@ import "./App.css";
 const App: React.FC = () => {
   const [displayValue, setDisplayValue] = useState<string>("0");
 
+  function calculaValor(displayValue: string, inverter : boolean ){
+    try {
+      if (displayValue !== "Invalid value"){
+        const replacedValue = displayValue.replace("x", "*").replace("÷", "/");
+        const value: number = evaluate(replacedValue);
+        if (inverter)
+          setDisplayValue((value*-1).toString());
+        else
+        setDisplayValue((value).toString());
+      }
+    }
+    catch{
+      setDisplayValue("Invalid value");
+    }
+  }
+
   function handleClick(event: React.FormEvent<HTMLInputElement>): void {
     const buttonName: string = event.currentTarget.innerText;
     if (buttonName === "AC") setDisplayValue("0");
+    else if (buttonName === "+/-"){
+      calculaValor(displayValue, true);
+    }
     else if (buttonName === "=") {
-      const replacedValue = displayValue.replace("x", "*").replace("÷", "/");
-      console.log(replacedValue);
-      const value: number = evaluate(replacedValue);
-      setDisplayValue(value.toString());
+      calculaValor(displayValue, false);
     } else {
-      if (displayValue === "0") setDisplayValue(buttonName);
-      else setDisplayValue((value) => `${value}${buttonName}`);
+      if (displayValue === "0" || displayValue === "Invalid value")
+        setDisplayValue(buttonName);
+      else
+        setDisplayValue((value) => `${value}${buttonName}`);
     }
   }
 
